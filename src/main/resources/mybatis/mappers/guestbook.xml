@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="guestbook">
+	<select id="selectList" resultType="guestbookvo">
+		<!-- 태그처럼 해석하지 마라(<![CDATA[]]) -->
+		<![CDATA[
+			SELECT   no, 
+			         name, 
+			         DATE_FORMAT( reg_date, '%Y-%m-%d %p %h:%i:%s' ) as regDate, 
+			         message as content 
+			from     guestbook 
+			ORDER BY reg_date desc
+		]]>
+	</select>
+	
+	<select id="selectList_PAGE" resultType="guestbookvo" parameterType="Integer">
+		<![CDATA[
+			SELECT   no, 
+			         name, 
+			         DATE_FORMAT( reg_date, '%Y-%m-%d %p %h:%i:%s' ) as regDate, 
+			         message as content
+			from     guestbook 
+			ORDER BY reg_date desc 
+			limit #{p}, 5;
+		]]>
+	</select>
+	
+	<insert id="insert" parameterType="guestbookvo">
+		<![CDATA[
+			insert into guestbook
+				values( null, #{name}, now(), #{content}, password(#{password}) )
+		]]>
+	</insert>
+	
+	<insert id="insert2" parameterType="guestbookvo">
+		<![CDATA[
+			INSERT INTO guestbook 
+				VALUES( null, #{name}, now(), #{content}, password(#{password}) )
+		]]>
+		<selectKey keyProperty="no" resultType="Long" order="AFTER">
+			select last_insert_id()
+		</selectKey>
+	</insert>
+	
+	<select id="selectByNo" resultType="guestbookvo" parameterType="Long">
+		select		no, 
+					name, 
+					DATE_FORMAT(reg_date, '%Y-%m-%d %p %h:%i:%s' ) as regDate, 
+					message as content
+		from 		guestbook 
+		where 		no = #{no}
+	</select>
+	
+	<delete id="delete" parameterType="guestbookvo">
+		delete from guestbook where no = #{no} and passwd = password(#{password})
+	</delete>
+	
+	<delete id="delete2" parameterType="map">
+		delete from guestbook where no = #{no} and passwd = password(#{password})
+	</delete>
+</mapper>

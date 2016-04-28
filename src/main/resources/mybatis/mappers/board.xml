@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board">
+	<select id="getList" resultType="boardvo">
+		<![CDATA[
+			select * from board order by group_no desc, order_no asc
+		]]>
+	</select>
+	
+	<select id="getList_VALUE" resultType="boardvo" parameterType="map">
+		<![CDATA[
+			select	* 
+			from 	board 
+			where 	title like #{kwd} 
+					or content like #{kwd} order by group_no desc, order_no asc limit #{startNo}, #{num}
+		]]>
+	</select>
+	
+	<select id="getList_KEYWORD" resultType="boardvo" parameterType="String">
+		<![CDATA[
+			select * from board where title like #{kwd} or content like #{kwd}
+		]]>
+	</select>
+	
+	<select id="getList_PAGE" resultType="boardvo" parameterType="map">
+		<![CDATA[
+			select * from board order by group_no desc, order_no asc limit #{startNo}, #{num}
+		]]>
+	</select>
+	
+	<select id="getPageCount" resultType="Integer">
+		<![CDATA[
+			select floor(count(*)/5) + if( (count(*)%5) > 0, 1, 0 ) from board
+		]]>
+	</select>
+	
+	<select id="getPageCount_KEYWORD" resultType="Integer" parameterType="String">
+		<![CDATA[
+			select floor(count(*)/5) + if( (count(*)%5) > 0, 1, 0 ) 
+			from board 
+			where title like #{kwd} or content like #{kwd}
+		]]>
+	</select>
+	
+	<select id="getPageCount_VALUE" resultType="Integer" parameterType="map">
+		<![CDATA[
+			select floor(count(*)/5) + if( (count(*)%5) > 0, 1, 0 ) 
+			from board 
+			where title like #{kwd} or content like #{kwd} limit #{startNo}, #{num}
+		]]>
+	</select>
+	
+	<insert id="insert" parameterType="boardvo">
+		<![CDATA[
+			insert into board values( 
+				null, #{title}, #{content}, now(), #{user_no}, 
+				(select ifnull(max(b.group_no),0)+1 from board as b), 1, 0, 0)
+		]]>
+	</insert>
+	
+	<insert id="insertAnswer" parameterType="map">
+		<![CDATA[
+			insert into board values(
+				null, #{vo.title}, #{vo.content}, now(), #{vo.user_no}, 
+				#{parentVo.group_no}, #{parentVo.order_no}, #{parentVo.depth}, 0)
+		]]>
+	</insert>
+	
+	<update id="answerAfter" parameterType="boardvo">
+		<![CDATA[
+			update board set 
+				order_no = order_no + 1
+			where no != #{no} and group_no = #{group_no} and order_no >= #{order_no}
+		]]>
+	</update>
+	
+	<select id="getVo_NO" resultType="boardvo" parameterType="Long">
+		<![CDATA[
+			select * from board where no = #{no}
+		]]>
+	</select>
+	
+	<select id="getMaxBoardNo" resultType="Long">
+		<![CDATA[
+			select max(no) from board
+		]]>
+	</select>
+	
+	<update id="modify" parameterType="boardvo">
+		<![CDATA[
+			update board set 
+				title = #{title}, content = #{content}, reg_date = now() where no = #{no}
+		]]>
+	</update>
+	
+	<update id="hitUpdate" parameterType="Long">
+		<![CDATA[
+			update board set hit = hit+1 where no = #{no}
+		]]>
+	</update>
+	
+	<delete id="delete" parameterType="Long">
+		delete from board where no = #{no}
+	</delete>
+	
+	<select id="getName" parameterType="Long" resultType="String">
+		select name from user where no = #{no}
+	</select>
+</mapper>
