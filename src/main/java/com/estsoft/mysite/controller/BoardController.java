@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.estsoft.mysite.annotation.Auth;
+import com.estsoft.mysite.annotation.AuthUser;
 import com.estsoft.mysite.service.BoardService;
 import com.estsoft.mysite.vo.BoardVo;
+import com.estsoft.mysite.vo.UserVo;
 
 @Controller
 @RequestMapping("/board")
@@ -67,7 +69,9 @@ public class BoardController {
 			@RequestParam(value="title", required=true, defaultValue="(제목없음)") String title,
 			@RequestParam(value="content", required=true, defaultValue="(내용없음)") String content,
 			@RequestParam(value="user_no", required=true, defaultValue="-1") Long authUserNo,
-			@RequestParam(value="mom_no", required=true, defaultValue="-1") Long momNo){
+			@RequestParam(value="mom_no", required=true, defaultValue="-1") Long momNo,
+			@AuthUser UserVo authUser){
+		System.out.println(authUser);
 		BoardVo vo = new BoardVo();
 		vo.setTitle(title);
 		vo.setContent(content);

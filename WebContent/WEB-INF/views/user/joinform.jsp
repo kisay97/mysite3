@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!doctype html>
 <html>
@@ -57,7 +58,7 @@ $(function(){
 	})
 	
 	//가입하기 버튼을 누르면 보내기 전에 필수요소 체크
-	$("#join-form").submit(function(){
+	$("#join-form2").submit(function(){
 		//1.이름
 		if($("#name").val() == ""){
 			alert("이름은 필수 요소입니다.")
@@ -102,9 +103,36 @@ $(function(){
 				<form id="join-form" name="joinForm" method="post" action="${pageContext.request.contextPath}/user/join">
 					<label class="block-label" for="name">이름</label>
 					<input id="name" name="name" type="text" value="">
-
+					
+					<spring:hasBindErrors name="userVo">
+						<c:if test="${errors.hasFieldErrors('name') }">
+							<c:set var="errorName" value="${errors.getFieldError( 'name' ).codes[0] }"/>
+							<br>
+							<strong style="color:red">
+								<spring:message 
+									code="${errorName }"
+									text="${errors.getFieldError( 'name' ).defaultMessage }"
+								/>
+							</strong>
+						</c:if>
+					</spring:hasBindErrors>
+					
 					<label class="block-label" for="email">이메일</label>
 					<input id="email" name="email" type="text" value="">
+					
+					<spring:hasBindErrors name="userVo">
+						<c:if test="${errors.hasFieldErrors('email') }">
+							<c:set var="errorEmail" value="${errors.getFieldError( 'email' ).codes[0] }"/>
+							<br>
+							<strong style="color:red">
+								<spring:message 
+									code="NotEmpty.userVo.email"
+									text="${errors.getFieldError( 'email' ).defaultMessage }"
+								/>
+							</strong>
+						</c:if>
+					</spring:hasBindErrors>
+					
 					<input id="btn-checkemail" type="button" value="id 중복체크">
 					<img id="img-checkemail" style="display:none" src="${pageContext.request.contextPath}/assets/images/check.png">
 					
