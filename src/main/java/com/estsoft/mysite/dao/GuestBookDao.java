@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StopWatch;
 
 import com.estsoft.mysite.exception.GuestbookGetListException;
 import com.estsoft.mysite.vo.GuestBookVo;
@@ -50,13 +51,28 @@ public class GuestBookDao {
 	}
 	
 	public List<GuestBookVo> getList() {
+//		StopWatch stopWatch = new StopWatch();
+//		stopWatch.start();
+		
 		List<GuestBookVo> list = sqlSession.selectList("guestbook.selectList"); //.xml에 같은 id의 쿼리가 있으면 namespace를 붙여준다.
+		
+//		stopWatch.stop();
+//		System.out.println("[Execution Time][GuestBookDao.getList] : "
+//						+ stopWatch.getTotalTimeMillis() + "millis");
+		
 		return list;
 	}
 	
 	public List<GuestBookVo> getList(int page) {
+//		StopWatch stopWatch = new StopWatch();
+//		stopWatch.start();
+		
 		Integer p = (page-1)*5;
 		List<GuestBookVo> list = sqlSession.selectList("guestbook.selectList_PAGE", p);
+		
+//		stopWatch.stop();
+//		System.out.println("[Execution Time][GuestBookDao.getList] : "
+//						+ stopWatch.getTotalTimeMillis() + "millis");
 		
 		for (GuestBookVo guestBookVo : list) {
 			System.out.println(guestBookVo);

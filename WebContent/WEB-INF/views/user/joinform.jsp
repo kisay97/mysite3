@@ -106,7 +106,7 @@ $(function(){
 					
 					<spring:hasBindErrors name="userVo">
 						<c:if test="${errors.hasFieldErrors('name') }">
-							<c:set var="errorName" value="${errors.getFieldError( 'name' ).codes[0] }"/>
+							<c:set var="errorName" value="${errors.getFieldError( 'name' ).codes[1] }"/>
 							<br>
 							<strong style="color:red">
 								<spring:message 
@@ -122,6 +122,14 @@ $(function(){
 					
 					<spring:hasBindErrors name="userVo">
 						<c:if test="${errors.hasFieldErrors('email') }">
+							
+							<%-- <c:choose>
+								<c:when test="${errors.getFiledError('email') }">
+								</c:when>
+								<c:otherwise>
+								</c:otherwise>
+							</c:choose> --%>
+							
 							<c:set var="errorEmail" value="${errors.getFieldError( 'email' ).codes[0] }"/>
 							<br>
 							<strong style="color:red">
